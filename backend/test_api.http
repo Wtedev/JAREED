@@ -1,0 +1,43 @@
+
+# 1. جلب كل المنتجات
+GET http://127.0.0.1:5000/api/products
+# لازم يرجع قائمة بالمنتجات من قاعدة بيانات Supabase
+ 
+
+# 2. جلب منتج واحد (مثال: المنتج رقم 1 )
+GET http://127.0.0.1:5000/api/products/1
+# يجب أن يرجع بيانات المنتج "Juice Box"
+
+
+
+# 3. إنشاء منتج جديد
+POST http://127.0.0.1:5000/api/products
+Content-Type: application/json
+
+{
+    "product_name": "مياه معدنية (جديد )",
+    "unit_weight": 0.5,
+    "container_weight": 0.1,
+    "total_weight": 12.1,
+    "shelf_id": 1
+}
+
+#لازم يرجع بيانات المنتج الجديد مع ID جديد وحالة 201 Created
+
+
+
+# 4. تحديث وزن منتج (مثال: المنتج رقم 2)
+# ملاحظة: الرابط تغير إلى /update_weight
+POST http://127.0.0.1:5000/api/products/2/update_weight
+Content-Type: application/json
+
+{
+    "total_weight": 18.5
+}
+
+# لازم يرجع بيانات المنتج المحدثة وحالة 200 OK
+
+
+# 5. حذف منتج (مثال: المنتج رقم 1 )
+DELETE http://127.0.0.1:5000/api/products/1
+#  لازم يرجع رسالة نجاح وحالة 200 OK
