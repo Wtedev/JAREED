@@ -16,3 +16,4 @@ backend/instance/
 # OS
 .DS_Store
 
+.env
