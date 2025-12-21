@@ -1,6 +1,18 @@
-venv/
-.venv/
-.env
+# Python
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+
+# Flask / App instance
 backend/instance/
+
+# Database
 *.db
+
+# OS
+.DS_Store
+
