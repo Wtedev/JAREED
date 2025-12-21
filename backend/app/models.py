@@ -10,6 +10,8 @@ class InventoryItem(db.Model):
     __tablename__ = "inventory_items"
 
     item_id = db.Column(db.Integer, primary_key=True) # لا حاجة لـ index=True هنا
+    rfid = db.Column(db.String(100), unique=True, nullable=True) #جديد
+    product_type = db.Column(db.String(100), nullable=True) # جديد
     product_name = db.Column(db.String(100), nullable=False)
     unit_weight = db.Column(db.Float, nullable=False)
     container_weight = db.Column(db.Float, nullable=False)
@@ -25,6 +27,8 @@ class InventoryItem(db.Model):
     def to_dict(self):
         return {
             "item_id": self.item_id,
+            "rfid": self.rfid,#جديد
+            "product_type": self.product_type,#جديد
             "product_name": self.product_name,
             "unit_weight": self.unit_weight,
             "container_weight": self.container_weight,
@@ -34,3 +38,4 @@ class InventoryItem(db.Model):
             "last_update": self.last_update.isoformat() if self.last_update else None,
             "status": self.status
         }
+

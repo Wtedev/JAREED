@@ -79,3 +79,13 @@ def get_predictions(item_id):
     
     except Exception as e:
         return jsonify({"message": "An error occurred while getting predictions", "error": str(e)}), 500
+
+# Test
+@products_bp.route('/api/products/test', methods=['POST'])
+def create_product_test():
+    data = request.get_json()
+
+    return jsonify({
+        "message": "Test route works 🎉",
+        "received_data": data
+    }), 201

@@ -1,10 +1,11 @@
-# backend/run.py
+from app import create_app, db
 
-from app import create_app
-
-# نقوم بإنشاء التطبيق باستخدام الـ Factory
 app = create_app()
 
-if __name__ == '__main__':
-    # هذا الجزء للتشغيل المحلي فقط، Render لن يستخدمه
+with app.app_context():
+    db.create_all()
+
+if __name__ == "__main__":
     app.run(debug=True)
+
+

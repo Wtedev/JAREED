@@ -31,6 +31,8 @@ def create_product_service(data):
     try:
         new_item = InventoryItem(
             product_name=data.get('product_name'),
+            rfid=data.get("rfid"),
+            product_type=data.get("product_type"),
             unit_weight=data.get('unit_weight'),
             container_weight=data.get('container_weight'),
             total_weight=data.get('total_weight'),
