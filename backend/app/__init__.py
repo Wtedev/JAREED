@@ -9,18 +9,13 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 def create_app():
-    # هذه هي دالة Application Factory.
-    # وظيفتها إنشاء وتهيئة تطبيق Flask.
     app = Flask(__name__)
-    CORS(app)
 
-    # 2. ربط التطبيق برابط قاعدة البيانات من متغيرات البيئة
-    # هذاالسطر يقرأ الرابط الذي سنضعه في رندر لاحقا
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # لتحسين الأداء
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///jareed.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # 3. نربط كائن قاعدة البيانات (db) بالتطبيق
     db.init_app(app)
+    
 
 
     # 4. نستورد ونسجل المخطط (Blueprint)
