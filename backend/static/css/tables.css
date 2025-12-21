@@ -1,0 +1,58 @@
+/* =========================
+   Tables Styles
+   ========================= */
+
+   .table {
+    background-color: transparent;
+    color: var(--c-text);
+    margin-bottom: 0;
+  }
+  
+  .table thead th {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--c-text);
+    background-color: transparent;
+    border-bottom: 1px solid rgba(36, 46, 53, 0.12);
+    padding: 14px 12px;
+  }
+  
+  .table td {
+    padding: 14px 12px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+  }
+  
+  /* إزالة أي بوردر افتراضي */
+  .table > :not(caption) > * > * {
+    border-bottom: none;
+  }
+  
+  .table tbody tr {
+    transition: background-color 0.12s ease;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: rgba(255, 41, 153, 0.04);
+  }
+  
+  .table .text-muted {
+    color: rgba(36, 46, 53, 0.55) !important;
+  }
+  
+  .table .badge {
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .table tbody tr td[colspan] {
+    text-align: center;
+    padding: 24px 12px;
+  }
+  
+  .table-responsive {
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  
