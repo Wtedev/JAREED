@@ -41,3 +41,21 @@ Content-Type: application/json
 # 5. حذف منتج (مثال: المنتج رقم 1 )
 DELETE http://127.0.0.1:5000/api/products/1
 #  لازم يرجع رسالة نجاح وحالة 200 OK
+### Create product
+POST http://127.0.0.1:5000/api/products
+Content-Type: application/json
+
+{
+  "name": "Sugar",
+  "type": "Food",
+  "rfid": "04A1B2C3D4",
+  "unit_weight": 50,
+  "total_weight": 500
+}
+### Update total weight
+PUT http://127.0.0.1:5000/api/products/1
+Content-Type: application/json
+
+{
+  "total_weight": 350
+}

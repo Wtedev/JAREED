@@ -1,0 +1,89 @@
+{% extends "auth_base.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  
+  <div class="auth-card">
+
+    <div class="auth-header">
+
+      <!-- Logo -->
+      <div class="auth-logo mb-3">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Jareed Logo">
+      </div>
+      
+      <!-- Welcome -->
+      <h1 class="auth-welcome">مرحبًا بك في جارد</h1>
+    
+      <!-- Description -->
+      <p class="auth-description">
+        جارد منصة ذكية لإدارة المخزون، متابعة المنتجات،
+        والتحكم بالبيانات بسهولة ودقة.
+      </p>
+    
+      <!-- CTA -->
+      <p class="auth-subtitle">
+        فضلاً سجّل الدخول للمتابعة
+      </p>
+    
+    </div>
+    
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if form and form.errors %}
+      <div class="alert alert-danger">تأكدي من صحة البريد وكلمة المرور.</div>
+    {% endif %}
+
+    <div class="auth-body">
+      <form method="POST" novalidate>
+        {% if form %}
+          {{ form.hidden_tag() }}
+        {% endif %}
+
+        <div class="mb-3">
+          <label class="form-label">البريد الإلكتروني</label>
+          {% if form %}
+            {{ form.email(class="form-control", placeholder="name@example.com") }}
+          {% else %}
+            <input name="email" class="form-control" placeholder="name@example.com" />
+          {% endif %}
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label">كلمة المرور</label>
+          {% if form %}
+            {{ form.password(class="form-control", placeholder="••••••••") }}
+          {% else %}
+            <input name="password" type="password" class="form-control" placeholder="••••••••" />
+          {% endif %}
+        </div>
+
+        <div class="auth-actions">
+          <div class="form-check">
+            {% if form and form.remember %}
+              {{ form.remember(class="form-check-input") }}
+              <label class="form-check-label">تذكرني</label>
+            {% else %}
+              <input class="form-check-input" type="checkbox" name="remember" id="remember">
+              <label class="form-check-label" for="remember">تذكرني</label>
+            {% endif %}
+          </div>
+
+          <a href="/forgot-password">نسيت كلمة المرور؟</a>
+        </div>
+
+        <button class="btn-auth" type="submit">دخول</button>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

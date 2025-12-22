@@ -1,11 +1,19 @@
 # backend/app/routes.py
-
-from flask import Blueprint, jsonify, request
+from .models import InventoryReading
+from flask import Blueprint, jsonify, request, render_template
+from flask import redirect, url_for
 # استيراد الدالة الجديدة predict_stock_needs
 from .services import get_all_products_service, get_product_by_id_service, create_product_service, update_product_weight_service, delete_product_service, predict_stock_needs 
-
+from .services import process_sensor_reading
+from datetime import datetime
 products_bp = Blueprint('products', __name__)
+@products_bp.route("/", methods=["GET"])
+def home():
+    return render_template("login.html")
 
+@products_bp.route("/dashboard", methods=["GET"])
+def dashboard_page():
+    return render_template("products.html")
 # ------------------------------------------------------------------
 # الـ Routes الحالية (CRUD Operations)
 # ------------------------------------------------------------------
@@ -59,23 +67,75 @@ def delete_product(item_id):
 # ------------------------------------------------------------------
 # الـ Route الجديدة للذكاء الاصطناعي (Predictive Analytics)
 # ------------------------------------------------------------------
-
 @products_bp.route('/api/predict/<int:item_id>', methods=['GET'])
 def get_predictions(item_id):
-    """
-    الرابط: GET /api/predict/<item_id>
-    الوظيفة: يستدعي دالة الخدمة للتنبؤ بالطلب على منتج معين.
-    """
     try:
-        # يمكن تمرير عدد الأيام المراد التنبؤ بها من خلال query parameter
-        days = request.args.get('days', default=7, type=int) 
-        
-        predictions = predict_stock_needs(item_id, days)
-        
-        if "error" in predictions:
-            return jsonify({"message": "Prediction failed", "details": predictions["error"]}), 500
-            
-        return jsonify(predictions), 200
-    
+        days = request.args.get('days', default=7, type=int)
+
+        result, code = predict_stock_needs(item_id, days)
+        return jsonify(result), code
+
     except Exception as e:
         return jsonify({"message": "An error occurred while getting predictions", "error": str(e)}), 500
+
+# @products_bp.route('/api/sensor-readings', methods=['POST'])
+# def receive_sensor_readings():
+#     """
+#     POST /api/sensor-readings
+#     يستقبل بيانات المحاكي/الحساسات مثل: rfid, weight, timestamp
+#     """
+#     data = request.get_json(silent=True) or {}
+
+#     rfid = data.get("rfid")
+#     weight = data.get("weight")
+#     timestamp = data.get("timestamp") or datetime.utcnow().isoformat()
+
+#     # تحقق بسيط (مهم عشان المشرفة + يمنع قيم فاضية)
+#     if rfid is None or weight is None:
+#         return jsonify({
+#             "message": "Missing required fields",
+#             "required": ["rfid", "weight"],
+#             "received": data
+#         }), 400
+
+#     payload = {
+#         "rfid": str(rfid),
+#         "weight": float(weight),
+#         "timestamp": timestamp
+#     }
+
+#     # مؤقتًا نطبع للتأكد أن الربط شغال 100%
+#     print("✅ Sensor Reading Received:", payload)
+
+#     return jsonify({
+#         "message": "Sensor reading received successfully",
+#         "data": payload
+#     }), 200
+
+@products_bp.route('/api/sensor-readings', methods=['POST'])
+def receive_sensor_readings():
+    data = request.get_json(silent=True) or {}
+    rfid = data.get("rfid")
+    weight = data.get("weight")
+    timestamp = data.get("timestamp") or datetime.utcnow().isoformat()
+
+    if rfid is None or weight is None:
+        return jsonify({
+            "message": "Missing required fields",
+            "required": ["rfid", "weight"],
+            "received": data
+        }), 400
+
+    result, code = process_sensor_reading(str(rfid), float(weight), timestamp)
+    return jsonify(result), code
+
+@products_bp.route('/api/readings/<int:item_id>', methods=['GET'])
+def get_item_readings(item_id):
+    try:
+        readings = InventoryReading.query.filter_by(item_id=item_id)\
+                    .order_by(InventoryReading.timestamp.asc()).all()
+
+        return jsonify([r.to_dict() for r in readings]), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

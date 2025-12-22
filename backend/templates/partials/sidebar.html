@@ -1,0 +1,44 @@
+<!-- Sidebar -->
+<aside class="sidebar p-3">
+
+    <!-- Brand -->
+    <div class="mb-4">
+      <div class="fw-bold sidebar-title">Warehouse</div>
+      <div class="text-muted small">Flask · Supabase</div>
+    </div>
+  
+    <!-- Navigation -->
+    <ul class="nav nav-pills flex-column gap-1">
+  
+      <li class="nav-item">
+        <a href="/warehouse"
+           class="nav-link {% if request.path == '/warehouse' or request.path == '/' %}active{% endif %}">
+          المخزن
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a href="/products"
+           class="nav-link {% if request.path.startswith('/products') %}active{% endif %}">
+          المنتجات
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/boxes"
+           class="nav-link {% if request.path.startswith('/boxes') %}active{% endif %}">
+          البوكسات
+        </a>
+      </li>
+      
+  
+    </ul>
+  
+    <hr class="my-4">
+  
+    <!-- Footer -->
+    <div class="text-muted small">
+      Version: MVP
+    </div>
+  
+  </aside>
+  

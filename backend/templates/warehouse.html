@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex align-items-center mb-4">
+  <div>
+    <h4 class="mb-1">المخزن</h4>
+    <div class="text-muted small">
+      عرض البوكسات والمنتجات المرتبطة والوزن والكمية
+    </div>
+  </div>
+
+  <div class="ms-auto d-flex gap-2 align-items-center">
+    <span id="status" class="badge text-bg-secondary">جاري التحميل...</span>
+
+    <button class="btn btn-outline-primary btn-sm" onclick="loadWarehouse()">
+      تحديث
+    </button>
+
+    <select id="refreshRate" class="form-select form-select-sm" style="width: 180px;">
+      <option value="0">بدون تحديث تلقائي</option>
+      <option value="3000">كل 3 ثواني</option>
+      <option value="5000" selected>كل 5 ثواني</option>
+      <option value="10000">كل 10 ثواني</option>
+    </select>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-muted">عدد البوكسات</div>
+        <div id="kpiBoxes" class="fs-3 fw-bold">-</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-muted">بوكسات بدون RFID</div>
+        <div id="kpiEmpty" class="fs-3 fw-bold">-</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-muted">آخر تحديث</div>
+        <div id="kpiLastUpdate" class="fs-6 fw-semibold">-</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+  <div class="card-body">
+
+    <h6 class="mb-3">قائمة البوكسات</h6>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Box ID</th>
+            <th>RFID</th>
+            <th>اسم المنتج</th>
+            <th>النوع</th>
+            <th>وزن القطعة</th>
+            <th>الوزن الكلي</th>
+            <th>الكمية</th>
+            <th>آخر تحديث</th>
+          </tr>
+        </thead>
+
+        <tbody id="rows">
+          <tr>
+            <td colspan="8" class="text-muted">
+              جارٍ تحميل البيانات...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/warehouse.js"></script>
+<script>
+  initWarehousePage();
+</script>
+{% endblock %}

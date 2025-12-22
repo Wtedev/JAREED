@@ -1,30 +1,31 @@
 # backend/app/__init__.py
+# backend/app/__init__.py
 
 import os
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
-# 1. نهيئ SQLAlchemy هنا ولكن بدون ربطه بالتطبيق بعد
 db = SQLAlchemy()
 
 def create_app():
-    # هذه هي دالة Application Factory.
-    # وظيفتها إنشاء وتهيئة تطبيق Flask.
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="../templates", static_folder="../static")
     CORS(app)
 
-    # 2. ربط التطبيق برابط قاعدة البيانات من متغيرات البيئة
-    # هذاالسطر يقرأ الرابط الذي سنضعه في رندر لاحقا
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # لتحسين الأداء
+    db_url = os.environ.get("DATABASE_URL")
+    if not db_url:
+        db_url = "sqlite:///jareed.db"
 
-    # 3. نربط كائن قاعدة البيانات (db) بالتطبيق
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
     db.init_app(app)
 
+    # مهم: استيراد الموديلات هنا (بعد db.init_app) لتفادي الـ circular import
+    with app.app_context():
+        from . import models  # يكفي عشان يسجل InventoryItem
+        db.create_all()
 
-    # 4. نستورد ونسجل المخطط (Blueprint)
-    # نضع الاستيراد هنا لتجنب الأخطاء الدائرية (Circular Imports)
     from .routes import products_bp
     app.register_blueprint(products_bp)
 
