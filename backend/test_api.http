@@ -27,7 +27,6 @@ Content-Type: application/json
   "shelf_id": 1
 }
 
-
 ### Get all products
 GET http://127.0.0.1:5000/api/products
 

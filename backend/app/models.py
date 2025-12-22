@@ -2,15 +2,37 @@
 
 # نستورد كائن db الذي أنشأناه في __init__.py
 from . import db
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # لم نعد بحاجة لـ declarative_base، لأن db.Model يقوم بالمهمة
 # Base = declarative_base()
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(190), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+
+    def set_password(self, password: str):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
 
 class InventoryItem(db.Model):
     __tablename__ = "inventory_items"
+    __table_args__ = (db.UniqueConstraint("user_id", "rfid", name="uq_user_rfid"),)
+
+
+    item_id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    user = db.relationship("User", backref="inventory_items")
+
 
     item_id = db.Column(db.Integer, primary_key=True) # لا حاجة لـ index=True هنا
-    rfid = db.Column(db.String(100), unique=True, nullable=True) #جديد
+    rfid = db.Column(db.String(100), nullable=True) #جديد
     product_type = db.Column(db.String(100), nullable=True) # جديد
     product_name = db.Column(db.String(100), nullable=False)
     unit_weight = db.Column(db.Float, nullable=False)

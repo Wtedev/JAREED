@@ -12,13 +12,9 @@ import numpy as np
 # لغرض التبسيط، سنفترض أن لديك دالة to_dict() في models.py
 # ... (بقية الدوال الموجودة مثل get_all_products_service, get_product_by_id_service, etc.) ...
 
-def get_all_products_service():
-    try:
-        items = InventoryItem.query.all()
-        # نحول قائمة الكائنات إلى قائمة قواميس
-        return [item.to_dict() for item in items]
-    except Exception as e:
-        return {"error": str(e)}
+def get_all_products_service(user_id: int):
+    items = InventoryItem.query.filter_by(user_id=user_id).order_by(InventoryItem.item_id.desc()).all()
+    return [i.to_dict() for i in items]
 
 def get_product_by_id_service(item_id):
     try:
@@ -27,25 +23,23 @@ def get_product_by_id_service(item_id):
     except Exception as e:
         return {"error": str(e)}
 
-def create_product_service(data):
-    try:
-        new_item = InventoryItem(
-            product_name=data.get('product_name'),
-            rfid=data.get("rfid"),
-            product_type=data.get("product_type"),
-            unit_weight=data.get('unit_weight'),
-            container_weight=data.get('container_weight'),
-            total_weight=data.get('total_weight'),
-            quantity=data.get('quantity'),
-            shelf_id=data.get('shelf_id'),
-            status=data.get('status', 'Normal')
-        )
-        db.session.add(new_item)
-        db.session.commit()
-        return new_item.to_dict()
-    except Exception as e:
-        db.session.rollback() # مهم للتراجع عن التغييرات عند حدوث خطأ
-        return {"error": str(e)}
+def create_product_service(data, user_id: int):
+    item = InventoryItem(
+        user_id=user_id,
+        rfid=data.get("rfid"),
+        product_type=data.get("product_type"),
+        product_name=data["product_name"],
+        unit_weight=data["unit_weight"],
+        container_weight=data["container_weight"],
+        total_weight=data["total_weight"],
+        quantity=data.get("quantity", 0),
+        shelf_id=data.get("shelf_id"),
+        status=data.get("status","Normal"),
+    )
+    db.session.add(item)
+    db.session.commit()
+    return item.to_dict()
+
 
 def update_product_weight_service(item_id, new_total_weight):
     try:
